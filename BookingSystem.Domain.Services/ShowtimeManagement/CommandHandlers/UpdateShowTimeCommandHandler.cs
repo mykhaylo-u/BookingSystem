@@ -30,7 +30,7 @@ namespace BookingSystem.Domain.Services.ShowtimeManagement.CommandHandlers
 
             _logger.LogInformation("ShowTime was updated.");
 
-            return addedShowTime ?? throw new Models.Showtime.Exceptions.ShowTimeCreationException();
+            return addedShowTime ?? throw new ShowTimeCreationException();
         }
     }
 }

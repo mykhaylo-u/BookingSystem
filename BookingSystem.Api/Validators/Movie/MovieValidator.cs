@@ -1,5 +1,4 @@
-﻿using BookingSystem.Api.ViewModels.Movie;
-using BookingSystem.Api.ViewModels.Movie.Requests;
+﻿using BookingSystem.Api.ViewModels.Movie.Requests;
 using BookingSystem.Utilities;
 using FluentValidation;
 using System.Globalization;

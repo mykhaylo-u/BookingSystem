@@ -8,7 +8,7 @@ namespace BookingSystem.Abstractions.Repositories
         Task<Theater> AddAsync(Theater theater, CancellationToken cancellationToken);
         Task<Theater?> UpdateAsync(int id, Theater theater);
         Task<Theater?> DeleteAsync(int id);
-        Task<IEnumerable<Theater>> GetList();
+        Task<IEnumerable<Theater>> GetAllAsync();
         Task<Theater> GetByIdAsync(int id);
     }
 }

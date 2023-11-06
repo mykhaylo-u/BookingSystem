@@ -5,16 +5,16 @@ using MediatR;
 
 namespace BookingSystem.Domain.Services.SeatReservation.QueryHandlers
 {
-    public class GetAllSeatReservationQueryHandler : IRequestHandler<GetAllSeatReservationsQuery, IEnumerable<Models.SeatReservation.SeatReservation>>
+    public class GetSeatReservationListQueryHandler : IRequestHandler<GetSeatReservationListQuery, IEnumerable<Models.SeatReservation.SeatReservation>>
     {
         private readonly ISeatReservationRepository _seatReservationRepository;
 
-        public GetAllSeatReservationQueryHandler(ISeatReservationRepository seatReservationRepository)
+        public GetSeatReservationListQueryHandler(ISeatReservationRepository seatReservationRepository)
         {
             _seatReservationRepository = seatReservationRepository;
         }
 
-        public async Task<IEnumerable<Models.SeatReservation.SeatReservation>> Handle(GetAllSeatReservationsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Models.SeatReservation.SeatReservation>> Handle(GetSeatReservationListQuery request, CancellationToken cancellationToken)
         {
             return await _seatReservationRepository.GetAllAsync();
         }

@@ -40,7 +40,7 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllSeatReservations()
         {
-            var seatReservations = await _mediator.Send(new GetAllSeatReservationsQuery());
+            var seatReservations = await _mediator.Send(new GetSeatReservationListQuery());
             var seatReservationViewModels = _mapper.Map<IEnumerable<SeatReservationViewModel>>(seatReservations);
             return Ok(seatReservationViewModels);
         }

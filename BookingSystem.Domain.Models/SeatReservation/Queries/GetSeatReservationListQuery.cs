@@ -2,7 +2,7 @@
 
 namespace BookingSystem.Domain.Models.SeatReservation.Queries
 {
-    public class GetAllSeatReservationsQuery : IRequest<IEnumerable<SeatReservation>>
+    public class GetSeatReservationListQuery : IRequest<IEnumerable<SeatReservation>>
     {
     }
 }

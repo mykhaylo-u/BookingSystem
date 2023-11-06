@@ -39,24 +39,10 @@ namespace BookingSystem.Repositories
             return availableSeatEntities
                 .Where(s => !reservedSeats.Contains(s.Id))
                 .Select(e => _mapper.Map<Seat>(e));
-
-            //var availableSeatsQuery = from st in _context.ShowTimes
-            //                          join sr in _context.SeatReservations on st.Id equals sr.ShowtimeId into seatReservations
-            //                          from sr in seatReservations.DefaultIfEmpty()
-            //                          where st.Id == showTimeId
-            //                                && (sr == null || sr.ReservationEndDate <= DateTime.Now || sr.ReservedSeats.All(r => r.Id != st.Id))
-            //                          select st;
-
-            //var availableSeats = await availableSeatsQuery
-            //    .SelectMany(st => st.Seats)
-            //    .Where(s => s.IsAvailable)
-            //    .ToListAsync();
-
-            //return availableSeats.Select(e => _mapper.Map<Seat>(e));
         }
 
 
-        public async Task<SeatReservation> AddAsync(SeatReservation seatSeatReservation)
+        public async Task<SeatReservation> AddSeatReservationAsync(SeatReservation seatSeatReservation)
         {
             var seatReservationEntity = _mapper.Map<Data.Entities.SeatReservation>(seatSeatReservation);
             var seats = await _context.Seats.Where(s => seatSeatReservation.ReservedSeatsIds.Contains(s.Id))
@@ -85,7 +71,6 @@ namespace BookingSystem.Repositories
 
             foreach (var seat in seatReservation.ReservedSeats)
             {
-                //var seat = await _context.Seats.FindAsync(seatId, bookingConfirmation.SeatReservation.ShowtimeId);
                 seat.IsAvailable = false;
             }
 
@@ -96,30 +81,6 @@ namespace BookingSystem.Repositories
 
             return _mapper.Map<BookingConfirmation>(confirmationEntity);
         }
-
-        //public async Task<SeatReservation?> UpdateAsync(int id, SeatReservation seatSeatReservation)
-        //{
-        //    var seatReservationEntity = _mapper.Map<Data.Entities.SeatReservation>(seatSeatReservation);
-
-        //    var seatReservationToUpdate = await _context.SeatReservations.FirstOrDefaultAsync(m => m.Id == id);
-        //    if (seatReservationToUpdate == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    seatReservationToUpdate. = seatReservationEntity.Title;
-        //    seatReservationToUpdate.Duration = seatReservationEntity.Duration;
-        //    seatReservationToUpdate.Genre = seatReservationEntity.Genre;
-        //    seatReservationToUpdate.Summary = seatReservationEntity.Summary;
-        //    seatReservationToUpdate.ShowStartDate = seatReservationEntity.ShowStartDate;
-        //    seatReservationToUpdate.ShowEndDate = seatReservationEntity.ShowEndDate;
-
-        //    _context.Entry(seatReservationToUpdate).State = EntityState.Modified;
-
-        //    await _context.SaveChangesAsync();
-
-        //    return _mapper.Map<SeatReservation>(seatReservationToUpdate);
-        //}
 
         public async Task<SeatReservation?> DeleteAsync(int id)
         {

@@ -23,16 +23,6 @@ namespace BookingSystem.Repositories
             return movieEntities.Select(e => _mapper.Map<Movie>(e));
         }
 
-        public async Task<IEnumerable<Movie>> GetAvailableMoviesAsync()
-        {
-            var currentDate = DateTime.Now;
-
-            var availableMovieEntities = await _context.Movies
-                .Where(movie => movie.ShowEndDate >= currentDate)
-                .ToListAsync();
-
-            return availableMovieEntities.Select(e => _mapper.Map<Movie>(e));
-        }
 
         public async Task<Movie> AddAsync(Movie movie)
         {

@@ -4,7 +4,6 @@ using BookingSystem.Api.Middlewares;
 using BookingSystem.Data;
 using BookingSystem.Repositories;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog.Events;
 using Serilog;
@@ -26,24 +25,7 @@ builder.Services.AddControllers()
     .AddFluentValidation(fv =>
         fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errors = context.ModelState
-            .Where(e => e.Value.Errors.Count > 0)
-            .SelectMany(x => x.Value.Errors)
-            .Select(x => x.ErrorMessage).ToArray();
-
-        var response = new ErrorResponse
-        {
-            Message = string.Join(' ', errors),
-            ErrorCode = "BS-400"
-        };
-
-        return new BadRequestObjectResult(response);
-    };
-});
+builder.Services.AddErrorHandler();
 
 
 // Initialize Serilog logger
@@ -56,9 +38,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-
 builder.Services.AddSwagger();
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();

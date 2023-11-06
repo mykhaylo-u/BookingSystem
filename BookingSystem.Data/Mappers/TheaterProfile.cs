@@ -8,7 +8,6 @@ namespace BookingSystem.Data.Mappers
         public TheaterProfile()
         {
             CreateMap<Theater, Domain.Models.Theater.Theater>()
-                //.ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats))
                 .ReverseMap();
         }
     }

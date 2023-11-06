@@ -40,7 +40,7 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTheaters()
         {
-            var theatersQuery = new GetListOfTheatersQuery();
+            var theatersQuery = new GetTheaterListQuery();
             var theaters = await _mediator.Send(theatersQuery);
             var theaterViewModels = _mapper.Map<IEnumerable<TheaterViewModel>>(theaters);
             return Ok(theaterViewModels);
@@ -69,7 +69,7 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddTheater([FromBody] AddTheaterRequest theater)
         {
-            var addedTheater = await _mediator.Send(new CreateTheaterCommand(theater.Name, theater.TotalSeats));
+            var addedTheater = await _mediator.Send(new AddTheaterCommand(theater.Name, theater.TotalSeats));
 
             return CreatedAtAction(nameof(GetById), new { id = addedTheater.Id }, addedTheater);
         }

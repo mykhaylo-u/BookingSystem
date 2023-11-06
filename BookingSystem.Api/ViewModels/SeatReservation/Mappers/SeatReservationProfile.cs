@@ -8,8 +8,6 @@ namespace BookingSystem.Api.ViewModels.SeatReservation.Mappers
         public SeatReservationProfile()
         {
             CreateMap<Domain.Models.SeatReservation.SeatReservation, SeatReservationViewModel>();
-                //.ForMember(dst => dst.ReservedSeats,
-                    //opt => opt.MapFrom(s => s.ReservedSeats));
             CreateMap<Domain.Models.SeatReservation.Seat, SeatViewModel>();
         }
     }

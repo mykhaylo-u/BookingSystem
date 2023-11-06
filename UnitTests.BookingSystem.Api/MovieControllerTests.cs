@@ -35,7 +35,7 @@ namespace UnitTests.BookingSystem.Api
 
         public MovieControllerTests()
         {
-            _mockMediator.Setup(m => m.Send(It.IsAny<GetListOfAvailableMoviesQuery>(), It.IsAny<CancellationToken>()))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetMovieListQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_movies);
 
             _mockMapper.Setup(m => m.Map<IEnumerable<MovieViewModel>>(_movies))
@@ -62,7 +62,7 @@ namespace UnitTests.BookingSystem.Api
         public async Task GetAvailableMovies_Returns_EmptyList_When_NoMoviesAvailable()
         {
             // Arrange
-            _mockMediator.Setup(m => m.Send(It.IsAny<GetListOfAvailableMoviesQuery>(), It.IsAny<CancellationToken>()))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetMovieListQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<Movie>());
 
             // Act
@@ -78,7 +78,7 @@ namespace UnitTests.BookingSystem.Api
         public async Task GetAvailableMovies_Returns_InternalServerError_OnException()
         {
             // Arrange
-            _mockMediator.Setup(m => m.Send(It.IsAny<GetListOfAvailableMoviesQuery>(), It.IsAny<CancellationToken>()))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetMovieListQuery>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act & Assert

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BookingSystem.Domain.Models.Seat;
 using BookingSystem.Domain.Models.SeatReservation;
 
 namespace BookingSystem.Api.ViewModels.ShowTime.Request

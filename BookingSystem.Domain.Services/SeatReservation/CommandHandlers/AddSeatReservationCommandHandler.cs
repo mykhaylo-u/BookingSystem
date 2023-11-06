@@ -20,7 +20,7 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
         public async Task<Models.SeatReservation.SeatReservation> Handle(AddSeatReservationCommand request, CancellationToken cancellationToken)
         {
             var dateTimeNow = DateTime.Now;
-            var addedSeatReservation = await _seatReservationRepository.AddAsync(new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId, request.ReservedSeatIds)
+            var addedSeatReservation = await _seatReservationRepository.AddSeatReservationAsync(new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId, request.ReservedSeatIds)
             {
                 ReservationStartDate = dateTimeNow,
                 ReservationEndDate = dateTimeNow.AddMinutes(BookingSystem.Utilities.Constants.ReservationTimeOut)

@@ -2,7 +2,7 @@
 {
     public class TheaterCreationException : DomainValidationException
     {
-        public TheaterCreationException() : base("Show Start Date could not be before today.", "MU -001")
+        public TheaterCreationException() : base("Something happen during Theater creation.", "MU -001")
         {
         }
     }

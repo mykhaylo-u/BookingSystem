@@ -6,7 +6,7 @@ using Moq;
 
 namespace UnitTests.BookingSystem.Domain.Services.MovieManagement.QueryHandlers
 {
-    public class GetListOfAvailableMoviesQueryHandlerTests
+    public class GetMovieListQueryHandlerTests
     {
         private readonly List<Movie> _movies = new()
         {
@@ -19,13 +19,13 @@ namespace UnitTests.BookingSystem.Domain.Services.MovieManagement.QueryHandlers
         {
             // Arrange
             var movieRepositoryMock = new Mock<IMovieRepository>();
-            movieRepositoryMock.Setup(repo => repo.GetAvailableMoviesAsync())
+            movieRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(_movies);
 
-            var handler = new GetListOfAvailableMoviesQueryHandler(movieRepositoryMock.Object);
+            var handler = new GetMovieListQueryHandler(movieRepositoryMock.Object);
 
             // Act
-            var result = await handler.Handle(new GetListOfAvailableMoviesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetMovieListQuery(), CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -38,13 +38,13 @@ namespace UnitTests.BookingSystem.Domain.Services.MovieManagement.QueryHandlers
         {
             // Arrange
             var movieRepositoryMock = new Mock<IMovieRepository>();
-            movieRepositoryMock.Setup(repo => repo.GetAvailableMoviesAsync())
+            movieRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(new List<Movie>());
 
-            var handler = new GetListOfAvailableMoviesQueryHandler(movieRepositoryMock.Object);
+            var handler = new GetMovieListQueryHandler(movieRepositoryMock.Object);
 
             // Act
-            var result = await handler.Handle(new GetListOfAvailableMoviesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetMovieListQuery(), CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -61,13 +61,13 @@ namespace UnitTests.BookingSystem.Domain.Services.MovieManagement.QueryHandlers
             var availableMovies = _movies.Where(m => m.ShowStartDate <= currentDate && m.ShowEndDate >= currentDate);
 
             var movieRepositoryMock = new Mock<IMovieRepository>();
-            movieRepositoryMock.Setup(repo => repo.GetAvailableMoviesAsync())
+            movieRepositoryMock.Setup(repo => repo.GetAllAsync())
                 .ReturnsAsync(availableMovies);
 
-            var handler = new GetListOfAvailableMoviesQueryHandler(movieRepositoryMock.Object);
+            var handler = new GetMovieListQueryHandler(movieRepositoryMock.Object);
 
             // Act
-            var result = await handler.Handle(new GetListOfAvailableMoviesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetMovieListQuery(), CancellationToken.None);
 
             // Assert
             Assert.Equal(availableMovies, result);

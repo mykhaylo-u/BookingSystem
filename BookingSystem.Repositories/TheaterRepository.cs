@@ -61,7 +61,7 @@ namespace BookingSystem.Repositories
             return _mapper.Map<Theater>(theaterToDelete);
         }
 
-        public async Task<IEnumerable<Theater>> GetList()
+        public async Task<IEnumerable<Theater>> GetAllAsync()
         {
             var theaters = await _context.Theaters
                 .ToListAsync();

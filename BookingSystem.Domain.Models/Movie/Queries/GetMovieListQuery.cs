@@ -2,7 +2,7 @@
 
 namespace BookingSystem.Domain.Models.Movie.Queries
 {
-    public class GetListOfAvailableMoviesQuery : IRequest<IEnumerable<Movie>>
+    public class GetMovieListQuery : IRequest<IEnumerable<Movie>>
     {
     }
 }

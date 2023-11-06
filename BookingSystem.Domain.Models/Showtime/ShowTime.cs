@@ -37,7 +37,7 @@ namespace BookingSystem.Domain.Models.Showtime
         /// <summary>
         /// Ticket price.
         /// </summary>
-        /// <example>12.50</example>
+        /// <example>120</example>
         [Required]
         [Range(0, double.MaxValue)]
         public decimal TicketPrice { get; set; }

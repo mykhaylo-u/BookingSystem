@@ -10,21 +10,21 @@ namespace BookingSystem.Api.ViewModels.SeatReservation.Request
         /// <summary>
         /// Showtime to which the reservation applies.
         /// </summary>
-        /// <value>1</value>
+        /// <example>1</example>
         [Required]
         public int ShowtimeId { get; set; }
 
         /// <summary>
         /// User making the reservation.
         /// </summary>
-        /// <value>1</value>
+        /// <example>1</example>
         [Required]
         public string UserId { get; set; }
 
         /// <summary>
         /// List of seat user try to reserve.
         /// </summary>
-        /// <value>[1,2]</value>
+        /// <example>[1,2]</example>
         [Required]
         public List<int> ReservedSeatIds { get; set; }
     }

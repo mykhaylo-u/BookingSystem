@@ -41,7 +41,7 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllMovies()
         {
-            var movies = await _mediator.Send(new GetListOfAvailableMoviesQuery());
+            var movies = await _mediator.Send(new GetMovieListQuery());
             var movieViewModels = _mapper.Map<IEnumerable<MovieViewModel>>(movies);
             return Ok(movieViewModels);
         }
