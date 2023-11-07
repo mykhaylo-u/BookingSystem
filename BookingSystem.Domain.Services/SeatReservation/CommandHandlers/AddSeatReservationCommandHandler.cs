@@ -10,7 +10,7 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
     {
         private readonly ISeatReservationRepository _seatReservationRepository;
         private readonly ILogger<AddSeatReservationCommandHandler> _logger;
-
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Initial count is 1, meaning only one thread can enter at a time
         public AddSeatReservationCommandHandler(ISeatReservationRepository seatReservationRepository, ILogger<AddSeatReservationCommandHandler> logger)
         {
             _seatReservationRepository = seatReservationRepository;
@@ -19,24 +19,41 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
 
         public async Task<Models.SeatReservation.SeatReservation> Handle(AddSeatReservationCommand request, CancellationToken cancellationToken)
         {
-            var availableSeats = await _seatReservationRepository.GetAllAvailableAsync(request.ShowtimeId);
+            await _semaphore.WaitAsync(cancellationToken);
 
-
-            if (!request.ReservedSeatIds.All(rs => availableSeats.Select(s => s.Id).Contains(rs)))
+            try
             {
-                throw new SeatReservationUnavailableException();
+                var availableSeats = await _seatReservationRepository.GetAllAvailableAsync(request.ShowtimeId);
+
+
+                if (!request.ReservedSeatIds.All(rs => availableSeats.Select(s => s.Id).Contains(rs)))
+                {
+                    throw new SeatReservationUnavailableException();
+                }
+
+                var dateTimeNow = DateTime.Now;
+                var addedSeatReservation = await _seatReservationRepository.AddSeatReservationAsync(
+                    new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId,
+                        request.ReservedSeatIds)
+                    {
+                        ReservationStartDate = dateTimeNow,
+                        ReservationEndDate =
+                            dateTimeNow.AddMinutes(BookingSystem.Utilities.Constants.ReservationTimeOut)
+                    });
+
+                if (addedSeatReservation == null)
+                {
+                    throw new SeatReservationCreationException();
+                }
+
+                _logger.LogInformation("New SeatReservation created.");
+
+                return addedSeatReservation;
             }
-
-            var dateTimeNow = DateTime.Now;
-            var addedSeatReservation = await _seatReservationRepository.AddSeatReservationAsync(new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId, request.ReservedSeatIds)
+            finally
             {
-                ReservationStartDate = dateTimeNow,
-                ReservationEndDate = dateTimeNow.AddMinutes(BookingSystem.Utilities.Constants.ReservationTimeOut)
-            });
-
-            _logger.LogInformation("New SeatReservation created.");
-
-            return addedSeatReservation ?? throw new SeatReservationCreationException();
+                _semaphore.Release();
+            }
         }
     }
 }
