@@ -66,8 +66,8 @@ namespace BookingSystem.Repositories
                 .Include(seatReservation => seatReservation.Showtime)
                 .FirstAsync(sr => sr.Id == bookingConfirmation.SeatReservationId);
 
-            var totalPrice = seatReservation.Showtime.TicketPrice * seatReservation.ReservedSeats.Count;
-            confirmationEntity.TotalPrice = totalPrice;
+            
+            confirmationEntity.TotalPrice = bookingConfirmation.TotalPrice;
 
             foreach (var seat in seatReservation.ReservedSeats)
             {

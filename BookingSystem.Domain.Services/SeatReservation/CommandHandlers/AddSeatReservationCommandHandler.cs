@@ -19,6 +19,14 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
 
         public async Task<Models.SeatReservation.SeatReservation> Handle(AddSeatReservationCommand request, CancellationToken cancellationToken)
         {
+            var availableSeats = await _seatReservationRepository.GetAllAvailableAsync(request.ShowtimeId);
+
+
+            if (!request.ReservedSeatIds.All(rs => availableSeats.Select(s => s.Id).Contains(rs)))
+            {
+                throw new SeatReservationUnavailableException();
+            }
+
             var dateTimeNow = DateTime.Now;
             var addedSeatReservation = await _seatReservationRepository.AddSeatReservationAsync(new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId, request.ReservedSeatIds)
             {

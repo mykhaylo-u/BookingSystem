@@ -20,8 +20,21 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
 
         public async Task<BookingConfirmation> Handle(AddBookingConfirmationCommand request, CancellationToken cancellationToken)
         {
+            var reservation = await _seatReservationRepository.GetByIdAsync(request.ReservationId);
+            
+            if (reservation == null || reservation.ReservationEndDate < DateTime.Now)
+            {
+                throw new BookingConfirmationTimeOutException();
+            }
+            if (reservation.IsConfirmed)
+            {
+                throw new BookingConfirmationDuplicationException();
+            }
+
+            var totalPrice = reservation.Showtime.TicketPrice * reservation.ReservedSeats.Count;
+
             var addedSeatReservation = await _seatReservationRepository.AddBookingConfirmationAsync(
-                new BookingConfirmation(request.ReservationId));
+                new BookingConfirmation(request.ReservationId, totalPrice));
 
             _logger.LogInformation("New BookingConfirmation created.");
 
