@@ -11,5 +11,8 @@ namespace BookingSystem.Domain.Models.SeatReservation.Commands
             ReservationId = reservationId;
         }
 
+        public AddBookingConfirmationCommand()
+        {
+        }
     }
 }

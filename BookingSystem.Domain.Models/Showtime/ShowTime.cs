@@ -60,5 +60,8 @@ namespace BookingSystem.Domain.Models.Showtime
             Seats = seats;
         }
 
+        public ShowTime()
+        {
+        }
     }
 }

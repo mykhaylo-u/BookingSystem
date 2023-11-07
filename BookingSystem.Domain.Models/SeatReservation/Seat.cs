@@ -5,7 +5,7 @@
         /// <summary>
         /// Seat ID.
         /// </summary>
-        public int Id { get; private set; }
+        public int Id { get; set; }
         /// <summary>
         /// Row number of the seat.
         /// </summary>
@@ -26,6 +26,10 @@
             Row = row;
             Number = number;
             IsAvailable = isAvailable;
+        }
+
+        public Seat()
+        {
         }
     }
 }

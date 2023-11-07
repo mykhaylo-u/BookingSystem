@@ -1,5 +1,4 @@
 ﻿using BookingSystem.Abstractions.Repositories;
-using BookingSystem.Domain.Models.SeatReservation;
 using BookingSystem.Domain.Models.SeatReservation.Queries;
 using MediatR;
 

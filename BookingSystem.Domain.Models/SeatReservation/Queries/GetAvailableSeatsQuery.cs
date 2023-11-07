@@ -9,6 +9,10 @@ namespace BookingSystem.Domain.Models.SeatReservation.Queries
             ShowTimeId = showTimeId;
         }
 
+        public GetAvailableSeatsQuery()
+        {
+        }
+
         public int ShowTimeId { get; set; }
     }
 }
