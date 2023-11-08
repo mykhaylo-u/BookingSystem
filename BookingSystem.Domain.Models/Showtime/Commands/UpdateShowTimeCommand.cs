@@ -22,5 +22,9 @@ namespace BookingSystem.Domain.Models.Showtime.Commands
             TicketPrice = ticketPrice;
             Seats = seats;
         }
+
+        public UpdateShowTimeCommand()
+        {
+        }
     }
 }

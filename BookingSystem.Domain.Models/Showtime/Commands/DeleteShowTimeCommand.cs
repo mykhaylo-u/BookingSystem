@@ -9,6 +9,10 @@ namespace BookingSystem.Domain.Models.Showtime.Commands
             Id = id;
         }
 
+        public DeleteShowTimeCommand()
+        {
+        }
+
         public int Id { get; set; }
     }
 }

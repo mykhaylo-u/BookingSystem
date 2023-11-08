@@ -25,7 +25,7 @@ namespace BookingSystem.Domain.Services.TheaterManagement.CommandHandlers
 
             _logger.LogInformation("Theater was deleted.");
 
-            return deletedTheater ?? throw new TheaterCreationException();
+            return deletedTheater ?? throw new TheaterNotFoundException(request.Id);
         }
     }
 }

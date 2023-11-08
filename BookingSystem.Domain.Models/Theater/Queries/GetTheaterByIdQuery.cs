@@ -9,6 +9,10 @@ namespace BookingSystem.Domain.Models.Theater.Queries
             Id = id;
         }
 
+        public GetTheaterByIdQuery()
+        {
+        }
+
         public int Id { get; set; }
     }
 }

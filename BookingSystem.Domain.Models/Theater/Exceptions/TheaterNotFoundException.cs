@@ -2,7 +2,7 @@
 {
     public class TheaterNotFoundException : DomainValidationException
     {
-        public TheaterNotFoundException(int movieId)
-            : base($"No Theater found with ID {movieId}.", "TU-010") { }
+        public TheaterNotFoundException(int theaterId)
+            : base($"No Theater found with ID {theaterId}.", "TU-010") { }
     }
 }

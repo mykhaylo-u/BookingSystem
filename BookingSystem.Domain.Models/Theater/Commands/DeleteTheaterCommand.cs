@@ -9,6 +9,10 @@ namespace BookingSystem.Domain.Models.Theater.Commands
             Id = id;
         }
 
+        public DeleteTheaterCommand()
+        {
+        }
+
         public int Id { get; set; }
     }
 }
