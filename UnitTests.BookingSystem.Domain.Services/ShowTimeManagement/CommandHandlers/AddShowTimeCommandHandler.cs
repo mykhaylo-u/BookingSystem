@@ -40,7 +40,7 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ShowTimeCreationException>(() => _handler.Handle(command, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidShowTimeDateRangeException>(() => _handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
@@ -70,7 +70,10 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
                 StartDateTime = DateTime.Now.AddDays(1)
             };
 
-            _mockMovieRepository.Setup(repo => repo.GetByIdAsync(command.MovieId)).ReturnsAsync(new Movie());
+            var movie = new Movie("MyMovie", TimeSpan.FromHours(1), "Comedy", DateTime.Today,
+                DateTime.Today.AddDays(2), "Summary");
+
+            _mockMovieRepository.Setup(repo => repo.GetByIdAsync(command.MovieId)).ReturnsAsync(movie);
             _mockTheaterRepository.Setup(repo => repo.GetByIdAsync(command.TheaterId)).ReturnsAsync((Theater)null);
 
             // Act & Assert
@@ -91,13 +94,18 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
                 Seats = new List<Seat>()
             };
 
-            var movie = new Movie();
-            var theater = new Theater();
+            var movie = new Movie("MyMovie", TimeSpan.FromHours(1), "Comedy", DateTime.Today,
+                DateTime.Today.AddDays(2), "Summary");
+
+            var theater = new Theater("Theater 1", 50);
+
+            var seats = new List<Seat> { new(1, 1) };
+            var showtime = new ShowTime(1, 1, DateTime.Today, DateTime.Today, 10, seats);
 
             _mockMovieRepository.Setup(repo => repo.GetByIdAsync(command.MovieId)).ReturnsAsync(movie);
             _mockTheaterRepository.Setup(repo => repo.GetByIdAsync(command.TheaterId)).ReturnsAsync(theater);
 
-            _mockShowTimeRepository.Setup(repo => repo.AddAsync(It.IsAny<ShowTime>())).ReturnsAsync(new ShowTime());
+            _mockShowTimeRepository.Setup(repo => repo.AddAsync(It.IsAny<ShowTime>())).ReturnsAsync(showtime);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);

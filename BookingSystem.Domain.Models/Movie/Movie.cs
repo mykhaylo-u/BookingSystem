@@ -19,9 +19,5 @@
             ShowEndDate = showEndDate;
             Summary = summary;
         }
-
-        public Movie()
-        {
-        }
     }
 }

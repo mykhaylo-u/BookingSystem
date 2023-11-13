@@ -1,11 +1,6 @@
-using BookingSystem.Abstractions.Repositories;
 using BookingSystem.Api.DependencyInjection;
 using BookingSystem.Api.Middlewares;
-using BookingSystem.Data;
-using BookingSystem.Repositories;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
-using Serilog.Events;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddMediatR(
-    cfg => cfg.RegisterServicesFromAssemblies(typeof(BookingSystem.Domain.Models.Info).Assembly,
-        typeof(BookingSystem.Domain.Services.Info).Assembly));
+builder.Services.AddMediatR();
 
-builder.Services.AddDbContext<BookingDbContext>(options =>
-    options.UseInMemoryDatabase("BookingDatabase"));
+builder.Services.AddBookingContext();
 
 builder.Services.AddControllers()
     .AddFluentValidation(fv =>
@@ -27,24 +19,14 @@ builder.Services.AddControllers()
 
 builder.Services.AddErrorHandler();
 
-
-// Initialize Serilog logger
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
-
+builder.Services.AddSerilog();
 builder.Host.UseSerilog();
 
 builder.Services.AddSwagger();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<ITheaterRepository, TheaterRepository>();
-builder.Services.AddScoped<IShowTimeRepository, ShowTimeRepository>();
-builder.Services.AddScoped<ISeatReservationRepository, SeatReservationRepository>();
+builder.Services.RegisterDomainServices();
 
 var app = builder.Build();
 

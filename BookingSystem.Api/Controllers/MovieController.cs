@@ -1,5 +1,4 @@
 using BookingSystem.Domain.Models.Movie.Commands;
-using BookingSystem.Domain.Models.Movie;
 using BookingSystem.Domain.Models.Movie.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +41,9 @@ namespace BookingSystem.Api.Controllers
         public async Task<IActionResult> GetAllMovies()
         {
             var movies = await _mediator.Send(new GetMovieListQuery());
+
             var movieViewModels = _mapper.Map<IEnumerable<MovieViewModel>>(movies);
+
             return Ok(movieViewModels);
         }
 
@@ -71,6 +72,7 @@ namespace BookingSystem.Api.Controllers
             }
 
             var movieViewModel = _mapper.Map<MovieViewModel>(movie);
+
             return Ok(movieViewModel);
         }
 
@@ -98,12 +100,14 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(typeof(MovieViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddMovie([FromBody] AddMovieRequest movie)
+        public async Task<IActionResult> AddMovie([FromBody] AddMovieRequest addMovieRequest)
         {
-            var addedMovie = await _mediator.Send(new AddNewMovieCommand(movie.Title,
-                TimeSpan.FromMinutes(movie.Duration), movie.Genre, movie.Summary,
-                DateTime.Parse(movie.ShowStartDate),
-                DateTime.Parse(movie.ShowEndDate)
+            _logger.LogInformation("New Movie will be created.");
+
+            var addedMovie = await _mediator.Send(new AddNewMovieCommand(addMovieRequest.Title,
+                TimeSpan.FromMinutes(addMovieRequest.Duration), addMovieRequest.Genre, addMovieRequest.Summary,
+                DateTime.Parse(addMovieRequest.ShowStartDate),
+                DateTime.Parse(addMovieRequest.ShowEndDate)
             ));
 
             return CreatedAtAction(nameof(GetById), new { id = addedMovie.Id }, addedMovie);
@@ -128,20 +132,22 @@ namespace BookingSystem.Api.Controllers
         ///
         /// </remarks>
         /// <param name="id">Movie ID to update.</param>
-        /// <param name="movie">Movie information to update.</param>
+        /// <param name="updateMovieRequest">Movie information to update.</param>
         /// <response code="200">Returns updated movie.</response>
         /// <response code="400">If movie is null or ID doesn't match.</response>
         /// <response code="404">If movie cannot be found.</response>
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMovie(int id, [FromBody] UpdateMovieRequest movie)
+        public async Task<IActionResult> UpdateMovie(int id, [FromBody] UpdateMovieRequest updateMovieRequest)
         {
-            var updatedMovie = await _mediator.Send(new UpdateMovieCommand(id, movie.Title,
-                TimeSpan.FromMinutes(movie.Duration), movie.Genre, movie.Summary,
-                DateTime.Parse(movie.ShowStartDate),
-                DateTime.Parse(movie.ShowEndDate)
+            _logger.LogInformation($"Movie ID: {id} will be updated.");
+
+            var updatedMovie = await _mediator.Send(new UpdateMovieCommand(id, updateMovieRequest.Title,
+                TimeSpan.FromMinutes(updateMovieRequest.Duration), updateMovieRequest.Genre, updateMovieRequest.Summary,
+                DateTime.Parse(updateMovieRequest.ShowStartDate),
+                DateTime.Parse(updateMovieRequest.ShowEndDate)
             ));
 
             return Ok(updatedMovie);
@@ -154,17 +160,17 @@ namespace BookingSystem.Api.Controllers
         /// <response code="204">Returns deleted movie.</response>
         /// <response code="404">If Not Found movie with ID.</response>
         /// <response code="400">If movie could not be deleted.</response>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
+            _logger.LogInformation($"Movie ID: {id} will be deleted.");
+
             var deletedMovie = await _mediator.Send(new DeleteMovieCommand(id));
 
             return Ok(deletedMovie);
-
-            //return NoContent();
         }
     }
 }

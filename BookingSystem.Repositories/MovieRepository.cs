@@ -23,7 +23,6 @@ namespace BookingSystem.Repositories
             return movieEntities.Select(e => _mapper.Map<Movie>(e));
         }
 
-
         public async Task<Movie> AddAsync(Movie movie)
         {
             var movieEntity = _mapper.Map<Data.Entities.Movie>(movie);

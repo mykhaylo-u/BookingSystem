@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using BookingSystem.Api.ViewModels.Movie.Requests;
 using BookingSystem.Api.ViewModels.Theater.Requests;
 using BookingSystem.Api.ViewModels.Theater.Responses;
-using BookingSystem.Domain.Models.Movie.Commands;
 using BookingSystem.Domain.Models.Theater.Commands;
 using BookingSystem.Domain.Models.Theater.Queries;
 using MediatR;
@@ -14,13 +12,15 @@ namespace BookingSystem.Api.Controllers
     [Route("[controller]")]
     public class TheaterController : ControllerBase
     {
+        private readonly ILogger<TheaterController> _logger;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public TheaterController(IMediator mediator, IMapper mapper)
+        public TheaterController(IMediator mediator, IMapper mapper, ILogger<TheaterController> logger)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -35,17 +35,17 @@ namespace BookingSystem.Api.Controllers
         /// </remarks>
         /// <response code="200">Returns Theaters list</response>
         /// <response code="500">If there is an internal server error</response>
-        [HttpGet("AllTheaters")]
+        [HttpGet("allTheaters")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTheaters()
         {
-            var theatersQuery = new GetTheaterListQuery();
-            var theaters = await _mediator.Send(theatersQuery);
+            var theaters = await _mediator.Send(new GetTheaterListQuery());
+
             var theaterViewModels = _mapper.Map<IEnumerable<TheaterViewModel>>(theaters);
+
             return Ok(theaterViewModels);
         }
-
 
         /// <summary>
         /// Adds a new Theater.
@@ -67,9 +67,11 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(typeof(TheaterViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddTheater([FromBody] AddTheaterRequest theater)
+        public async Task<IActionResult> AddTheater([FromBody] AddTheaterRequest addTheaterRequest)
         {
-            var addedTheater = await _mediator.Send(new AddTheaterCommand(theater.Name, theater.TotalSeats));
+            _logger.LogInformation("New Theater will be added.");
+
+            var addedTheater = await _mediator.Send(new AddTheaterCommand(addTheaterRequest.Name, addTheaterRequest.TotalSeats));
 
             return CreatedAtAction(nameof(GetById), new { id = addedTheater.Id }, addedTheater);
         }
@@ -90,17 +92,18 @@ namespace BookingSystem.Api.Controllers
         /// <response code="200">Returns updated Theater.</response>
         /// <response code="400">If Theater is null or ID doesn't match.</response>
         /// <response code="404">If v cannot be found.</response>
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMovie(int id, [FromBody] UpdateTheaterRequest theater)
+        public async Task<IActionResult> UpdateTheater(int id, [FromBody] UpdateTheaterRequest updateTheaterRequest)
         {
-            var updatedMovie = await _mediator.Send(new UpdateTheaterCommand(id, theater.Name, theater.TotalSeats));
+            _logger.LogInformation($"Theater ID: {id} will be updated.");
+
+            var updatedMovie = await _mediator.Send(new UpdateTheaterCommand(id, updateTheaterRequest.Name, updateTheaterRequest.TotalSeats));
 
             return Ok(updatedMovie);
         }
-
 
 
         /// <summary>
@@ -139,17 +142,17 @@ namespace BookingSystem.Api.Controllers
         /// <response code="204">Returns deleted Theater.</response>
         /// <response code="404">If Not Found Theater with ID.</response>
         /// <response code="400">If Theater could not be deleted.</response>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteTheater(int id)
         {
+            _logger.LogInformation($"Theater ID: {id} will be deleted.");
+
             var deletedTheater = await _mediator.Send(new DeleteTheaterCommand(id));
 
             return Ok(deletedTheater);
-
-            //return NoContent();
         }
     }
 }

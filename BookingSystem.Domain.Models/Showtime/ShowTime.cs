@@ -47,8 +47,8 @@ namespace BookingSystem.Domain.Models.Showtime
         /// </summary>
         public List<SeatReservation.Seat> Seats { get; set; }
 
-        public Movie.Movie Movie { get; set; }
-        public Theater.Theater Theater { get; set; }
+        public Movie.Movie? Movie { get; set; }
+        public Theater.Theater? Theater { get; set; }
 
         public ShowTime(int movieId, int theaterId, DateTime startDateTime, DateTime endDateTime, decimal ticketPrice, List<SeatReservation.Seat> seats)
         {
@@ -58,10 +58,6 @@ namespace BookingSystem.Domain.Models.Showtime
             EndDateTime = endDateTime;
             TicketPrice = ticketPrice;
             Seats = seats;
-        }
-
-        public ShowTime()
-        {
         }
     }
 }

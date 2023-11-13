@@ -22,7 +22,7 @@ namespace BookingSystem.Domain.Services.TheaterManagement.CommandHandlers
         {
             var addedTheater = await _theaterRepository.UpdateAsync(request.Id, new Theater(request.Name, request.TotalSeats));
 
-            _logger.LogInformation("Theater was updated.");
+            _logger.LogInformation($"Theater ID: {request.Id} was updated.");
 
             return addedTheater ?? throw new TheaterNotFoundException(request.Id);
         }

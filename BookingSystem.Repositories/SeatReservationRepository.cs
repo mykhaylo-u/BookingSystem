@@ -36,15 +36,16 @@ namespace BookingSystem.Repositories
                 .Where(sr => sr.ShowtimeId == showTimeId && sr.ReservationEndDate > DateTime.Now)
                 .SelectMany(sr => sr.ReservedSeats.Select(s => s.Id))
                 .ToListAsync();
+
             return availableSeatEntities
                 .Where(s => !reservedSeats.Contains(s.Id))
                 .Select(e => _mapper.Map<Seat>(e));
         }
 
-
         public async Task<SeatReservation> AddSeatReservationAsync(SeatReservation seatSeatReservation)
         {
             var seatReservationEntity = _mapper.Map<Data.Entities.SeatReservation>(seatSeatReservation);
+
             var seats = await _context.Seats.Where(s => seatSeatReservation.ReservedSeatsIds.Contains(s.Id))
                 .ToListAsync();
 
@@ -66,7 +67,6 @@ namespace BookingSystem.Repositories
                 .Include(seatReservation => seatReservation.Showtime)
                 .FirstAsync(sr => sr.Id == bookingConfirmation.SeatReservationId);
 
-            
             confirmationEntity.TotalPrice = bookingConfirmation.TotalPrice;
 
             foreach (var seat in seatReservation.ReservedSeats)
@@ -92,6 +92,7 @@ namespace BookingSystem.Repositories
 
             _context.SeatReservations.Remove(seatReservationToDelete);
             await _context.SaveChangesAsync();
+
             return _mapper.Map<SeatReservation>(seatReservationToDelete);
         }
 

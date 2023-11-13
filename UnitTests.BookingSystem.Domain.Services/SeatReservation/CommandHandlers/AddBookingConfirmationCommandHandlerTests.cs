@@ -28,15 +28,19 @@ namespace UnitTests.BookingSystem.Domain.Services.SeatReservation.CommandHandler
             // Arrange
             var reservationId = 1;
             var ticketPrice = 10m;
-            var showtime = new BookingSystemDomain.Showtime.ShowTime { TicketPrice = ticketPrice };
-            var reservedSeats = new List<Seat> { new Seat { IsAvailable = true }, new Seat { IsAvailable = true } };
-            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation
-            {
-                Id = reservationId,
-                Showtime = showtime,
-                ReservedSeats = reservedSeats,
-                ReservationEndDate = DateTime.Now.AddMinutes(30)
-            };
+            var seats = new List<Seat> { new(1, 1) };
+            var showtime = new BookingSystemDomain.Showtime.ShowTime(1, 1, DateTime.Today, DateTime.Today, ticketPrice, seats);
+            var reservedSeats = new List<Seat> { new(1, 1) { IsAvailable = true }, new(1, 2) { IsAvailable = true } };
+            
+            var seatReservation =
+                new BookingSystemDomain.SeatReservation.SeatReservation(showtime.Id, "myUser1",
+                    reservedSeats.Select(s => s.Id).ToList())
+                {
+                    Id = reservationId,
+                    Showtime = showtime,
+                    ReservedSeats = reservedSeats,
+                    ReservationEndDate = DateTime.Now.AddMinutes(30)
+                };
 
             _mockSeatReservationRepository.Setup(repo => repo.GetByIdAsync(reservationId))
                 .ReturnsAsync(seatReservation);
@@ -72,7 +76,8 @@ namespace UnitTests.BookingSystem.Domain.Services.SeatReservation.CommandHandler
         {
             // Arrange
             var reservationId = 1;
-            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation
+            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation(1, "myUser1",
+                new List<int> {1,2})
             {
                 ReservationEndDate = DateTime.Now.AddMinutes(-1)
             };
@@ -91,7 +96,7 @@ namespace UnitTests.BookingSystem.Domain.Services.SeatReservation.CommandHandler
         {
             // Arrange
             var reservationId = 1;
-            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation
+            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation(1, "MyUser1",  new List<int> { 1,2})
             {
                 IsConfirmed = true,
                 ReservationEndDate = DateTime.Now.AddMinutes(30)
@@ -112,15 +117,18 @@ namespace UnitTests.BookingSystem.Domain.Services.SeatReservation.CommandHandler
             // Arrange
             var reservationId = 1;
             var ticketPrice = 10m;
-            var showtime = new BookingSystemDomain.Showtime.ShowTime { TicketPrice = ticketPrice };
-            var reservedSeats = new List<Seat> { new Seat { IsAvailable = true }, new Seat { IsAvailable = true } };
-            var seatReservation = new BookingSystemDomain.SeatReservation.SeatReservation
-            {
-                Id = reservationId,
-                Showtime = showtime,
-                ReservedSeats = reservedSeats,
-                ReservationEndDate = DateTime.Now.AddMinutes(30)
-            };
+            var seats = new List<Seat> { new(1, 1) };
+            var showtime = new BookingSystemDomain.Showtime.ShowTime(1, 1, DateTime.Today, DateTime.Today, ticketPrice, seats);
+            var reservedSeats = new List<Seat> { new(1, 1) { IsAvailable = true }, new(1, 2) { IsAvailable = true } };
+            var seatReservation =
+                new BookingSystemDomain.SeatReservation.SeatReservation(showtime.Id, "myUser1",
+                    reservedSeats.Select(s => s.Id).ToList())
+                {
+                    Id = reservationId,
+                    Showtime = showtime,
+                    ReservedSeats = reservedSeats,
+                    ReservationEndDate = DateTime.Now.AddMinutes(30)
+                };
 
             _mockSeatReservationRepository.Setup(repo => repo.GetByIdAsync(reservationId))
                 .ReturnsAsync(seatReservation);

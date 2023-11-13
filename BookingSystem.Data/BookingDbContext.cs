@@ -23,19 +23,19 @@ namespace BookingSystem.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Entities.Movie>()
+            modelBuilder.Entity<Movie>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<Entities.Theater>()
+            modelBuilder.Entity<Theater>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<Entities.Seat>()
+            modelBuilder.Entity<Seat>()
                 .HasKey(x => new { x.Id, x.ShowTimeId });
 
-            modelBuilder.Entity<Entities.ShowTime>()
+            modelBuilder.Entity<ShowTime>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<Entities.ShowTime>()
+            modelBuilder.Entity<ShowTime>()
                 .HasMany(t => t.Seats)
                 .WithOne()
                 .HasForeignKey(s => s.ShowTimeId)
@@ -51,25 +51,22 @@ namespace BookingSystem.Data
                 .WithMany()
                 .HasForeignKey(st => st.TheaterId);
 
-            modelBuilder.Entity<Entities.SeatReservation>()
+            modelBuilder.Entity<SeatReservation>()
                 .HasKey(x => x.Id);
 
 
-            modelBuilder.Entity<Entities.SeatReservation>()
+            modelBuilder.Entity<SeatReservation>()
                 .HasMany(t => t.ReservedSeats)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Entities.BookingConfirmation>()
+            modelBuilder.Entity<BookingConfirmation>()
                 .HasKey(x => x.Id);
 
-
-            modelBuilder.Entity<Entities.BookingConfirmation>()
+            modelBuilder.Entity<BookingConfirmation>()
                 .HasOne(t => t.SeatReservation)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
-
-
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

@@ -1,4 +1,5 @@
 ﻿using BookingSystem.Abstractions.Repositories;
+using BookingSystem.Domain.Models.SeatReservation;
 using BookingSystem.Domain.Models.Showtime;
 using BookingSystem.Domain.Models.Showtime.Queries;
 using BookingSystem.Domain.Services.ShowtimeManagement.QueryHandlers;
@@ -21,10 +22,18 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.QueryHandle
         public async Task Handle_WhenCalled_ReturnsAllShowTimes()
         {
             // Arrange
+            var seats = new List<Seat> { new(1, 1) };
+
             var showTimes = new List<ShowTime>
             {
-                new ShowTime { Id = 1 },
-                new ShowTime { Id = 2 },
+                new(1, 1, DateTime.Today, DateTime.Today, 10, seats)
+                {
+                    Id = 1
+                },
+                new(1, 1, DateTime.Today, DateTime.Today, 10, seats)
+                {
+                    Id = 2
+                },
             };
 
             _mockShowTimeRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(showTimes);

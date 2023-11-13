@@ -16,7 +16,7 @@ namespace BookingSystem.Api.Validators.Movie
                 {
                     if (string.IsNullOrEmpty(x) || !DateTime.TryParseExact(x, Constants.DefaultDateFormat,
                             CultureInfo.InvariantCulture, DateTimeStyles.None,
-                            out var dt))
+                            out _))
                     {
                         context.AddFailure("ShowStartDate is should be in format YYYY-MM-dd.");
                     }

@@ -27,9 +27,5 @@
             Number = number;
             IsAvailable = isAvailable;
         }
-
-        public Seat()
-        {
-        }
     }
 }

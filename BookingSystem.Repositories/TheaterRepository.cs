@@ -22,7 +22,6 @@ namespace BookingSystem.Repositories
             var theaterEntity = _mapper.Map<Data.Entities.Theater>(theater);
 
             await _context.Theaters.AddAsync(theaterEntity, cancellationToken);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<Theater>(theaterEntity);
@@ -42,7 +41,6 @@ namespace BookingSystem.Repositories
             theaterToUpdate.TotalSeats = theaterEntity.TotalSeats;
 
             _context.Entry(theaterToUpdate).State = EntityState.Modified;
-
             await _context.SaveChangesAsync();
 
             return _mapper.Map<Theater>(theaterToUpdate);
@@ -58,6 +56,7 @@ namespace BookingSystem.Repositories
 
             _context.Theaters.Remove(theaterToDelete);
             await _context.SaveChangesAsync();
+
             return _mapper.Map<Theater>(theaterToDelete);
         }
 
@@ -69,7 +68,7 @@ namespace BookingSystem.Repositories
             return theaters.Select(t => _mapper.Map<Theater>(t));
         }
 
-        public async Task<Theater> GetByIdAsync(int id)
+        public async Task<Theater?> GetByIdAsync(int id)
         {
             var theater = await _context.Theaters
                 .FirstOrDefaultAsync(t => t.Id == id);

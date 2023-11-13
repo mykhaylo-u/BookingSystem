@@ -6,20 +6,27 @@ using Microsoft.Extensions.Logging;
 
 namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
 {
-    public class AddSeatReservationCommandHandler : IRequestHandler<AddSeatReservationCommand, Models.SeatReservation.SeatReservation>
+    public class
+        AddSeatReservationCommandHandler : IRequestHandler<AddSeatReservationCommand,
+            Models.SeatReservation.SeatReservation>
     {
         private readonly ISeatReservationRepository _seatReservationRepository;
         private readonly ILogger<AddSeatReservationCommandHandler> _logger;
-        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // Initial count is 1, meaning only one thread can enter at a time
-        public AddSeatReservationCommandHandler(ISeatReservationRepository seatReservationRepository, ILogger<AddSeatReservationCommandHandler> logger)
+
+        private static readonly SemaphoreSlim
+            Semaphore = new(1, 1); // Initial count is 1, meaning only one thread can enter at a time
+
+        public AddSeatReservationCommandHandler(ISeatReservationRepository seatReservationRepository,
+            ILogger<AddSeatReservationCommandHandler> logger)
         {
             _seatReservationRepository = seatReservationRepository;
             _logger = logger;
         }
 
-        public async Task<Models.SeatReservation.SeatReservation> Handle(AddSeatReservationCommand request, CancellationToken cancellationToken)
+        public async Task<Models.SeatReservation.SeatReservation> Handle(AddSeatReservationCommand request,
+            CancellationToken cancellationToken)
         {
-            await _semaphore.WaitAsync(cancellationToken);
+            await Semaphore.WaitAsync(cancellationToken);
 
             try
             {
@@ -32,13 +39,14 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
                 }
 
                 var dateTimeNow = DateTime.Now;
+
                 var addedSeatReservation = await _seatReservationRepository.AddSeatReservationAsync(
                     new Models.SeatReservation.SeatReservation(request.ShowtimeId, request.UserId,
                         request.ReservedSeatIds)
                     {
                         ReservationStartDate = dateTimeNow,
                         ReservationEndDate =
-                            dateTimeNow.AddMinutes(BookingSystem.Utilities.Constants.ReservationTimeOut)
+                            dateTimeNow.AddMinutes(Utilities.Constants.ReservationTimeOut)
                     });
 
                 if (addedSeatReservation == null)
@@ -52,7 +60,7 @@ namespace BookingSystem.Domain.Services.SeatReservation.CommandHandlers
             }
             finally
             {
-                _semaphore.Release();
+                Semaphore.Release();
             }
         }
     }

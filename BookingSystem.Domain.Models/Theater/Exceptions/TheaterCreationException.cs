@@ -2,7 +2,7 @@
 {
     public class TheaterCreationException : DomainValidationException
     {
-        public TheaterCreationException() : base("Something happen during Theater creation.", "MU -001")
+        public TheaterCreationException() : base("Something happen during Theater creation.", "TU-001")
         {
         }
     }

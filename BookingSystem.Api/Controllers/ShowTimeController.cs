@@ -3,7 +3,6 @@ using BookingSystem.Api.ViewModels.ShowTime;
 using BookingSystem.Api.ViewModels.ShowTime.Request;
 using BookingSystem.Domain.Models.Showtime.Commands;
 using BookingSystem.Domain.Models.Showtime.Queries;
-using BookingSystem.Domain.Models.Showtime;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,10 +41,11 @@ namespace BookingSystem.Api.Controllers
         public async Task<IActionResult> GetAllShowTimes()
         {
             var showTimes = await _mediator.Send(new GetShowTimesListQuery());
+
             var showTimeViewModels = _mapper.Map<IEnumerable<ShowTimeViewModel>>(showTimes);
+
             return Ok(showTimeViewModels);
         }
-
 
         /// <summary>
         /// Get ShowTime by ID.
@@ -72,6 +72,7 @@ namespace BookingSystem.Api.Controllers
             }
 
             var showTimeViewModel = _mapper.Map<ShowTimeViewModel>(showTime);
+
             return Ok(showTimeViewModel);
         }
 
@@ -102,10 +103,14 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(typeof(ShowTimeViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddShowTime([FromBody] AddShowTimeRequest showTime)
+        public async Task<IActionResult> AddShowTime([FromBody] AddShowTimeRequest addShowTimeRequest)
         {
-            var addedShowTime = await _mediator.Send(new AddShowTimeCommand(showTime.MovieId, showTime.TheaterId, showTime.StartDateTime,
-                showTime.EndDateTime, showTime.TicketPrice, showTime.Seats
+            _logger.LogInformation("New ShowTime will be added.");
+
+            var addedShowTime = await _mediator.Send(new AddShowTimeCommand(addShowTimeRequest.MovieId,
+                addShowTimeRequest.TheaterId,
+                addShowTimeRequest.StartDateTime,
+                addShowTimeRequest.EndDateTime, addShowTimeRequest.TicketPrice, addShowTimeRequest.Seats
             ));
 
             return CreatedAtAction(nameof(GetById), new { id = addedShowTime.Id }, addedShowTime);
@@ -134,18 +139,21 @@ namespace BookingSystem.Api.Controllers
         ///
         /// </remarks>
         /// <param name="id">ShowTime ID to update.</param>
-        /// <param name="showTime">ShowTime information to update.</param>
+        /// <param name="updateShowTimeRequest">ShowTime information to update.</param>
         /// <response code="200">Returns updated ShowTime.</response>
         /// <response code="400">If ShowTime is null or ID doesn't match.</response>
         /// <response code="404">If ShowTime cannot be found.</response>
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateShowTime(int id, [FromBody] UpdateShowTimeRequest showTime)
+        public async Task<IActionResult> UpdateShowTime(int id, [FromBody] UpdateShowTimeRequest updateShowTimeRequest)
         {
-            var updatedShowTime = await _mediator.Send(new UpdateShowTimeCommand(id, showTime.MovieId, showTime.TheaterId, showTime.StartDateTime,
-                showTime.EndDateTime, showTime.TicketPrice, showTime.Seats
+            _logger.LogInformation($"ShowTime ID: {id} will be updated.");
+
+            var updatedShowTime = await _mediator.Send(new UpdateShowTimeCommand(id, updateShowTimeRequest.MovieId,
+                updateShowTimeRequest.TheaterId, updateShowTimeRequest.StartDateTime,
+                updateShowTimeRequest.EndDateTime, updateShowTimeRequest.TicketPrice, updateShowTimeRequest.Seats
             ));
 
             return Ok(updatedShowTime);
@@ -158,17 +166,17 @@ namespace BookingSystem.Api.Controllers
         /// <response code="204">Returns deleted ShowTime.</response>
         /// <response code="404">If Not Found ShowTime with ID.</response>
         /// <response code="400">If ShowTime could not be deleted.</response>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteShowTime(int id)
         {
+            _logger.LogInformation($"ShowTime ID: {id} will be deleted.");
+
             var deletedShowTime = await _mediator.Send(new DeleteShowTimeCommand(id));
 
             return Ok(deletedShowTime);
-
-            //return NoContent();
         }
     }
 }

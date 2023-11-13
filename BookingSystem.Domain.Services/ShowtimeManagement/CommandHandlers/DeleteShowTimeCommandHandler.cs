@@ -25,7 +25,7 @@ namespace BookingSystem.Domain.Services.ShowTimeManagement.CommandHandlers
 
             _logger.LogInformation("ShowTime was deleted.");
 
-            return deletedShowTime ?? throw new ShowTimeCreationException();
+            return deletedShowTime ?? throw new ShowTimeNotFoundException(request.Id);
         }
     }
 }

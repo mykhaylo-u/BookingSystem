@@ -32,7 +32,7 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ShowTimeCreationException>(() => _handler.Handle(command, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidShowTimeDateRangeException>(() => _handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
             _mockShowTimeRepository.Setup(repo => repo.UpdateAsync(command.Id, It.IsAny<ShowTime>())).ReturnsAsync((ShowTime)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ShowTimeCreationException>(() => _handler.Handle(command, CancellationToken.None));
+            await Assert.ThrowsAsync<ShowTimeNotFoundException>(() => _handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
@@ -64,9 +64,8 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
                 Seats = new List<Seat>()
             };
 
-            var existingShowTime = new ShowTime
-            {
-            };
+            var seats = new List<Seat> { new(1, 1) };
+            var existingShowTime = new ShowTime(1, 1, DateTime.Today, DateTime.Today, 10, seats);
 
             _mockShowTimeRepository.Setup(repo => repo.UpdateAsync(command.Id, It.IsAny<ShowTime>())).ReturnsAsync(existingShowTime);
 

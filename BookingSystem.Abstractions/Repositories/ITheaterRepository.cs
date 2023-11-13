@@ -1,5 +1,4 @@
-﻿using BookingSystem.Domain.Models.Movie;
-using BookingSystem.Domain.Models.Theater;
+﻿using BookingSystem.Domain.Models.Theater;
 
 namespace BookingSystem.Abstractions.Repositories
 {
@@ -9,6 +8,6 @@ namespace BookingSystem.Abstractions.Repositories
         Task<Theater?> UpdateAsync(int id, Theater theater);
         Task<Theater?> DeleteAsync(int id);
         Task<IEnumerable<Theater>> GetAllAsync();
-        Task<Theater> GetByIdAsync(int id);
+        Task<Theater?> GetByIdAsync(int id);
     }
 }

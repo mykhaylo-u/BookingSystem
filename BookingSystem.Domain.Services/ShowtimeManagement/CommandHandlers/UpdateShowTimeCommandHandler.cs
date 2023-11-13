@@ -22,15 +22,16 @@ namespace BookingSystem.Domain.Services.ShowtimeManagement.CommandHandlers
         {
             if (request.StartDateTime.Date < DateTime.Now.Date)
             {
-                throw new ShowTimeCreationException();
+                throw new InvalidShowTimeDateRangeException(request.StartDateTime.Date);
             }
 
-            var addedShowTime = await _showTimeRepository.UpdateAsync(request.Id,new ShowTime(request.MovieId, request.TheaterId, request.StartDateTime,
+            var addedShowTime = await _showTimeRepository.UpdateAsync(request.Id, new ShowTime(request.MovieId,
+                request.TheaterId, request.StartDateTime,
                 request.EndDateTime, request.TicketPrice, request.Seats));
 
-            _logger.LogInformation("ShowTime was updated.");
+            _logger.LogInformation($"ShowTime ID: {request.Id} was updated.");
 
-            return addedShowTime ?? throw new ShowTimeCreationException();
+            return addedShowTime ?? throw new ShowTimeNotFoundException(request.Id);
         }
     }
 }

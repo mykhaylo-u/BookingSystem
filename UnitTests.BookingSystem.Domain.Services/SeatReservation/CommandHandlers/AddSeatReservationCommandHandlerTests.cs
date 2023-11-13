@@ -107,7 +107,7 @@ namespace UnitTests.BookingSystem.Domain.Services.SeatReservation.CommandHandler
             var userId4 = "4";
             var reservedSeatIds = new List<int> { 5, 7 };
 
-            var availableSeats = reservedSeatIds.Select(id => new BookingSystemDomain.SeatReservation.Seat { Id = id }).ToList();
+            var availableSeats = reservedSeatIds.Select(id => new Seat(1, 2) { Id = id }).ToList();
 
             _mockSeatReservationRepository.Setup(repo => repo.GetAllAvailableAsync(showtimeId)).ReturnsAsync(availableSeats);
 

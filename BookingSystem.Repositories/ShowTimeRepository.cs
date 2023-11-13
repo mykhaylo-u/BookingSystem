@@ -24,6 +24,7 @@ namespace BookingSystem.Repositories
                 .Include(sh => sh.Theater)
                 .Include(sh => sh.Seats)
                 .ToListAsync();
+
             return showTimeEntities.Select(e => _mapper.Map<ShowTime>(e));
         }
 
@@ -80,6 +81,7 @@ namespace BookingSystem.Repositories
 
             _context.ShowTimes.Remove(showTimeToDelete);
             await _context.SaveChangesAsync();
+
             return _mapper.Map<ShowTime>(showTimeToDelete);
         }
 

@@ -13,9 +13,9 @@ namespace BookingSystem.Api.ViewModels.ShowTime.Mappers
                 .ForMember(d => d.EndDateTime,
                     opt => opt.MapFrom(s => s.EndDateTime.ToString(Constants.DefaultDateFormat)))
                 .ForMember(d => d.MovieName,
-                    opt => opt.MapFrom(s => s.Movie.Title))
+                    opt => opt.MapFrom(s => s.Movie!.Title))
                 .ForMember(d => d.TheaterName,
-                    opt => opt.MapFrom(s => s.Theater.Name)).ReverseMap();
+                    opt => opt.MapFrom(s => s.Theater!.Name)).ReverseMap();
         }
     }
 }

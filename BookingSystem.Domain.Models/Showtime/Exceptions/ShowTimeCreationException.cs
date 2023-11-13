@@ -2,7 +2,7 @@
 {
     public class ShowTimeCreationException : DomainValidationException
     {
-        public ShowTimeCreationException() : base("Something happen during ShowTime creation.", "STC-010")
+        public ShowTimeCreationException() : base("Something happen during ShowTime creation.", "ST-001")
         {
         }
     }

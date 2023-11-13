@@ -2,7 +2,8 @@
 {
     public class SeatReservationCreationException : DomainValidationException
     {
-        public SeatReservationCreationException() : base("Something happen during Seat SeatReservation creation.", "SRC-010")
+        public SeatReservationCreationException() : base("Something happen during Seat SeatReservation creation.",
+            "SRC-010")
         {
         }
     }

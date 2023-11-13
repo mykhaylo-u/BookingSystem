@@ -20,12 +20,11 @@ namespace BookingSystem.Domain.Services.MovieManagement.CommandHandlers
 
         public async Task<Movie> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
         {
-            
             var deletedMovie = await _movieRepository.DeleteAsync(request.Id);
 
-            _logger.LogInformation("Movie was deleted.");
+            _logger.LogInformation($"Movie ID: {request.Id} was deleted.");
 
-            return deletedMovie ?? throw new MovieCreationException();
+            return deletedMovie ?? throw new MovieNotFoundException(request.Id);
         }
     }
 }

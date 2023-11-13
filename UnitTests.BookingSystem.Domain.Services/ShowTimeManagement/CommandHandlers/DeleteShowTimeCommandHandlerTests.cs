@@ -1,4 +1,5 @@
 ﻿using BookingSystem.Abstractions.Repositories;
+using BookingSystem.Domain.Models.SeatReservation;
 using BookingSystem.Domain.Models.Showtime.Commands;
 using BookingSystem.Domain.Models.Showtime.Exceptions;
 using BookingSystem.Domain.Services.ShowTimeManagement.CommandHandlers;
@@ -29,14 +30,16 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.CommandHand
             _mockShowTimeRepository.Setup(repo => repo.DeleteAsync(command.Id)).ReturnsAsync((ShowTime)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ShowTimeCreationException>(() => _handler.Handle(command, CancellationToken.None));
+            await Assert.ThrowsAsync<ShowTimeNotFoundException>(() => _handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
         public async Task Handle_WithExistingShowTime_DeletesShowTimeSuccessfully()
         {
             // Arrange
-            var existingShowTime = new ShowTime { Id = 1 }; 
+            var seats = new List<Seat> { new(1, 1) };
+            var existingShowTime = new ShowTime(1, 1, DateTime.Today, DateTime.Today, 10, seats);
+
             var command = new DeleteShowTimeCommand { Id = existingShowTime.Id };
             _mockShowTimeRepository.Setup(repo => repo.DeleteAsync(command.Id)).ReturnsAsync(existingShowTime);
 

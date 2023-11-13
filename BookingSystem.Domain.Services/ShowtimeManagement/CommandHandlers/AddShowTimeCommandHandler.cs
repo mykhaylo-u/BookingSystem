@@ -28,20 +28,14 @@ namespace BookingSystem.Domain.Services.ShowtimeManagement.CommandHandlers
         {
             if (request.StartDateTime.Date < DateTime.Now.Date)
             {
-                throw new ShowTimeCreationException();
+                throw new InvalidShowTimeDateRangeException(request.StartDateTime.Date);
             }
 
-            var movie = await _movieRepository.GetByIdAsync(request.MovieId);
-            if (movie == null)
-            {
+            if (await _movieRepository.GetByIdAsync(request.MovieId) == null)
                 throw new MovieNotFoundException(request.MovieId);
-            }
 
-            var theater = await _theaterRepository.GetByIdAsync(request.TheaterId);
-            if (theater == null)
-            {
+            if (await _theaterRepository.GetByIdAsync(request.TheaterId) == null)
                 throw new TheaterNotFoundException(request.TheaterId);
-            }
 
             var addedShowTime = await _showTimeRepository.AddAsync(new ShowTime(request.MovieId, request.TheaterId, request.StartDateTime,
                 request.EndDateTime, request.TicketPrice, request.Seats));

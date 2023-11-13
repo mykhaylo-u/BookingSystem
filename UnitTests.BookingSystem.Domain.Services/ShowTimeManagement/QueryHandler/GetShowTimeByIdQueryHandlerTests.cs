@@ -1,4 +1,5 @@
 ﻿using BookingSystem.Abstractions.Repositories;
+using BookingSystem.Domain.Models.SeatReservation;
 using BookingSystem.Domain.Services.ShowTimeManagement.QueryHandlers;
 using Moq;
 using BookingSystem.Domain.Models.Showtime;
@@ -22,7 +23,12 @@ namespace UnitTests.BookingSystem.Domain.Services.ShowTimeManagement.QueryHandle
         {
             // Arrange
             var showTimeId = 1;
-            var showTime = new ShowTime { Id = showTimeId };
+            var seats = new List<Seat> { new(1, 1) };
+            var showTime = new ShowTime(1, 1, DateTime.Today, DateTime.Today, 10, seats)
+            {
+                Id = showTimeId
+            };
+
             var query = new GetShowTimeByIdQuery { Id = showTimeId };
 
             _mockShowTimeRepository.Setup(repo => repo.GetByIdAsync(showTimeId)).ReturnsAsync(showTime);

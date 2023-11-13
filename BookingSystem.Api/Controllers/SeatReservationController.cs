@@ -35,16 +35,17 @@ namespace BookingSystem.Api.Controllers
         /// </remarks>
         /// <response code="200">Returns movies list</response>
         /// <response code="500">If there is an internal server error</response>
-        [HttpGet("AllSeatReservations")]
+        [HttpGet("allSeatReservations")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllSeatReservations()
         {
             var seatReservations = await _mediator.Send(new GetSeatReservationListQuery());
+
             var seatReservationViewModels = _mapper.Map<IEnumerable<SeatReservationViewModel>>(seatReservations);
+
             return Ok(seatReservationViewModels);
         }
-
 
         /// <summary>
         /// Get AvailableSeats list.
@@ -58,13 +59,15 @@ namespace BookingSystem.Api.Controllers
         /// </remarks>
         /// <response code="200">Returns Available Seats list</response>
         /// <response code="500">If there is an internal server error</response>
-        [HttpGet("AvailableSeats/{showTimeId}")]
+        [HttpGet("availableSeats/{showTimeId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAvailableSeats(int showTimeId)
         {
             var seatReservations = await _mediator.Send(new GetAvailableSeatsQuery(showTimeId));
+
             var seatReservationViewModels = _mapper.Map<IEnumerable<SeatViewModel>>(seatReservations);
+
             return Ok(seatReservationViewModels);
         }
 
@@ -93,6 +96,7 @@ namespace BookingSystem.Api.Controllers
             }
 
             var seatReservationViewModel = _mapper.Map<SeatReservationViewModel>(seatReservation);
+
             return Ok(seatReservationViewModel);
         }
 
@@ -117,10 +121,14 @@ namespace BookingSystem.Api.Controllers
         [ProducesResponseType(typeof(SeatReservationViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddSeatReservation([FromBody] AddSeatReservationRequest seatReservation)
+        public async Task<IActionResult> AddSeatReservation(
+            [FromBody] AddSeatReservationRequest addSeatReservationRequest)
         {
-            var addedSeatReservation = await _mediator.Send(new AddSeatReservationCommand(seatReservation.ShowtimeId,
-                seatReservation.UserId, seatReservation.ReservedSeatIds
+            _logger.LogInformation("New reservation will be added.");
+
+            var addedSeatReservation = await _mediator.Send(new AddSeatReservationCommand(
+                addSeatReservationRequest.ShowtimeId,
+                addSeatReservationRequest.UserId, addSeatReservationRequest.ReservedSeatIds
             ));
 
             return CreatedAtAction(nameof(GetById), new { id = addedSeatReservation.Id }, addedSeatReservation);
@@ -143,16 +151,17 @@ namespace BookingSystem.Api.Controllers
         /// <response code="201">Returns the newly created SeatReservation</response>
         /// <response code="400">If bad request or validation fails</response>
         /// <response code="500">If there is an internal server error</response>
-        [HttpPost("ConfirmBooking")]
+        [HttpPost("confirmBooking")]
         [ProducesResponseType(typeof(SeatReservationViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ConfirmBooking(int reservationId)
         {
+            _logger.LogInformation($"Reservation {reservationId} will be confirmed.");
+
             var addedConfirmedBooking = await _mediator.Send(new AddBookingConfirmationCommand(reservationId));
 
             return CreatedAtAction(nameof(GetById), new { id = addedConfirmedBooking.Id }, addedConfirmedBooking);
         }
-
     }
 }

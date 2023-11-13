@@ -29,9 +29,5 @@ namespace BookingSystem.Domain.Models.Theater
             Name = name;
             TotalSeats = totalSeats;
         }
-
-        public Theater()
-        {
-        }
     }
 }
